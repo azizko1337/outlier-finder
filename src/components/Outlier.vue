@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { findArrayOutlier } from "../utils/arrayUtilities";
+import { usePerformance } from "../hooks/usePerformance";
 import Throbber from "./ui/Throbber.vue";
 
 const outlier = ref<number | null>(null);
 const loading = ref<boolean>(false);
 const arrayInput = ref<string>("");
 const errorMessage = ref<string>("");
-const time = ref<number>(0);
+
+const { time, measure } = usePerformance();
 
 function handleSubmit(e: Event) {
   e.preventDefault();
 
   loading.value = true;
   errorMessage.value = "";
-  time.value = 0;
-  performance.mark("outlier-start");
   try {
     let array = [];
     try {
@@ -23,15 +23,11 @@ function handleSubmit(e: Event) {
     } catch (e) {
       throw new Error("Niepoprawny format tablicy.");
     }
-    outlier.value = findArrayOutlier(array);
+    outlier.value = measure(() => findArrayOutlier(array));
   } catch (error: any) {
     errorMessage.value = error.message;
   } finally {
     loading.value = false;
-    performance.mark("outlier-end");
-    performance.measure("outlier-calculation", "outlier-start", "outlier-end");
-    const measure = performance.getEntriesByName("outlier-calculation").pop();
-    time.value = Math.round((measure?.duration || 0) * 100) / 100;
   }
 }
 </script>
