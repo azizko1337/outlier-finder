@@ -1,4 +1,4 @@
-# Zadanie rekrutacyjne - `wartość odstająca`
+# Wyszukiwanie wartości odstającej
 
 ## Prezentacja: [outlier.azalupka.cc](https://outlier.azalupka.cc)
 
