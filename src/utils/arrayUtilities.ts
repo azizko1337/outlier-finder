@@ -1,6 +1,6 @@
 export function findArrayOutlier(array: Array<number>): number {
   if (array.length < 3) {
-    throw new Error("Tablica musi mieć długość co najmniej 3 elementy.");
+    throw new Error("Tablica musi składać się z co najmniej 3 elementów.");
   }
 
   const isFirstElementOdd = array[0] % 2 !== 0;

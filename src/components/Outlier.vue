@@ -17,9 +17,21 @@ function handleSubmit(e: Event) {
   loading.value = true;
   errorMessage.value = "";
   try {
+    // deep copy value to not change input
+    let arrayText = `${arrayInput.value}`;
     let array = [];
     try {
-      array = JSON.parse(arrayInput.value);
+      // trim and remove ending \, if provided
+      arrayText = arrayText.trim();
+      if (arrayText[arrayText.length - 1] === ",")
+        arrayText = arrayText.slice(0, -1);
+
+      // check if input is in square brackets []
+      if (arrayText[0] !== "[" || arrayText[arrayText.length - 1] !== "]") {
+        arrayText = `[${arrayText}]`;
+      }
+
+      array = JSON.parse(arrayText);
     } catch (e) {
       throw new Error("Niepoprawny format tablicy.");
     }
@@ -34,8 +46,10 @@ function handleSubmit(e: Event) {
 
 <template>
   <div class="outlier-container">
+    <!-- loading -->
     <Throbber v-if="loading" />
 
+    <!-- input form -->
     <form @submit="handleSubmit" v-if="outlier === null && !loading">
       <div>
         <h1>Wartość odstająca</h1>
@@ -48,12 +62,13 @@ function handleSubmit(e: Event) {
           id="array"
           v-model.trim="arrayInput"
           type="text"
-          placeholder="np. [0, 2, 1, 4]"
+          placeholder="np.: [0, 2, 1, 4]"
         />
       </div>
       <button type="submit">Wyszukaj</button>
     </form>
 
+    <!-- result -->
     <div v-if="outlier !== null && !loading" class="result">
       <h2>Wartość odstająca:</h2>
       <h1>{{ outlier }}</h1>
@@ -112,7 +127,7 @@ form input {
   text-align: left;
 }
 .result h1 {
-  font-size: 12em;
+  font-size: 10em;
   margin: 0;
 
   background: -webkit-linear-gradient(
